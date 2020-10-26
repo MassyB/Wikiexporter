@@ -1,5 +1,5 @@
 import gzip
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import List, Iterable, Generator
 from collections import defaultdict
 import heapq
@@ -9,6 +9,10 @@ import os
 import requests
 
 from src.model.pageview import Pageview
+
+
+class WikimediaFailedDownloadException(Exception):
+    pass
 
 
 class Wikimedia:
@@ -24,8 +28,8 @@ class Wikimedia:
 
     @classmethod
     def _get_pageview_url(cls, dt: datetime) -> str :
-        date_str = dt.strftime('%Y%m%d')
-        return cls.PAGEVIEWS_URL_TEMPLATE.format(year=dt.year,month=dt.month, date=date_str, hour=dt.hour)
+        return cls.PAGEVIEWS_URL_TEMPLATE.format(year=dt.strftime('%Y'), month=dt.strftime('%m'),
+                                                 date=dt.strftime('%Y%m%d'), hour=dt.strftime('%H'))
 
     @classmethod
     def _download_file(cls, url: str, dir_path: str, chunk_size=10 * 1024 ** 2) -> str:
@@ -38,7 +42,9 @@ class Wikimedia:
         """
         file_name = url.split('/')[-1]
         file_path = os.path.join(dir_path, file_name)
-        response = requests.get(url=url, stream=True)
+        response = requests.get(url=url, stream=True) #todo what if there is an error
+        if response.status_code != requests.codes.ok:
+           raise WikimediaFailedDownloadException()
         with open(file_path, 'wb') as f:
             for chunk in response.iter_content(chunk_size=chunk_size):
                 f.write(chunk)
@@ -46,14 +52,13 @@ class Wikimedia:
         return file_path
 
     @classmethod
-    def _read_lines(cls, gzipped_file_path: str) -> Generator[str, None, None]:
+    def _read_lines(cls, file_path: str) -> Generator[str, None, None]:
         """read lines of a gzipped file.
 
-        :param gzipped_file_path:
+        :param file_path:
         :return: Iterable[str] lines of the gzipped file
         """
-
-        with gzip.open(gzipped_file_path, 'rt') as file_handle:
+        with gzip.open(file_path, 'rt') as file_handle:
             yield from file_handle
 
     @classmethod
@@ -68,18 +73,18 @@ class Wikimedia:
         top_k_per_domain = defaultdict(lambda: list())
 
         for pageview in pageviews:
-            domain, view_counts = pageview.domain, pageview.view_counts
+            domain, view_count = pageview.domain, pageview.view_count
             top_k = top_k_per_domain[domain]
 
             if len(top_k) < k:
-                heapq.heappush(top_k, (view_counts, id(pageview), pageview))
+                heapq.heappush(top_k, (view_count, id(pageview), pageview))
 
-            elif len(top_k) == k and view_counts > top_k[0][0]:
-                heapq.heapreplace(top_k, (view_counts, id(pageview), pageview))
+            elif len(top_k) == k and view_count > top_k[0][0]:
+                heapq.heapreplace(top_k, (view_count, id(pageview), pageview))
 
         top_k_pageviews = list(pageview for _, _, pageview in  itertools.chain(*top_k_per_domain.values()))
         return top_k_pageviews
 
     @classmethod
     def sort_pageviews_per_domain_and_views(cls, pageviews: List['Pageview']) -> None:
-        pageviews.sort(key=lambda pageview: (pageview.domain, pageview.view_counts))
+        pageviews.sort(key=lambda pageview: (pageview.domain, pageview.view_count))

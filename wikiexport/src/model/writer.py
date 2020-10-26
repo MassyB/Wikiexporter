@@ -12,7 +12,7 @@ class Writer:
 class LocalWriter(Writer):
 
     FILE_PATTERN = '%Y%m%dT%H:%M:%S'
-    HEADER = 'domain,page_title,pageview_counts\n'
+    HEADER = 'domain,page_title,pageview_count\n'
 
     def __init__(self, output_dir):
         self.output_dir = output_dir
@@ -23,7 +23,7 @@ class LocalWriter(Writer):
         with open(file_path, 'wt') as f:
             f.write(self.HEADER)
             for pageview in pageviews:
-                f.write(f'{pageview.domain},{pageview.page_title},{pageview.view_counts}\n')
+                f.write(f'{pageview.domain},{pageview.page_title},{pageview.view_count}\n')
 
         return file_path
 

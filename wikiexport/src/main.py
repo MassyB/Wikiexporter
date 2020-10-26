@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import click
 
-from src.utils import get_yesterday, get_datetime_hours_between
+from src.utils import get_yesterday_datetime_hour, get_datetime_hours_between
 from src.model.wikimedia import Wikimedia
 from src.model.cache import LocalCache
 from src.model.blacklist import BlackList
@@ -12,7 +12,7 @@ from src.model.writer import LocalWriter
 
 @click.option('--start-datetime', help='datetime (truncated to the hour) of the data to export. It\'s the start_date if end_date is specified',
               type=click.DateTime(formats=['%Y%m%dT%H:00:00']),
-              default=get_yesterday(), show_default = get_yesterday() , required=True)
+              default=get_yesterday_datetime_hour(), show_default = get_yesterday_datetime_hour() , required=True)
 
 @click.option('--end-datetime', help='end datetime inclusive (truncated to the hour) of the range to export',
               type=click.DateTime(formats=['%Y%m%dT%H:00:00']))
