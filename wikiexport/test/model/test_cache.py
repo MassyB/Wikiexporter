@@ -13,7 +13,7 @@ class LocalCacheTest(TestCase):
         LocalCache._remove_instance()
 
 
-    def test_instanciated_once(self):
+    def test_instantiated_once(self):
         file_path_to_open = LocalCache.CACHE_FILE_PATH
 
         with patch('src.model.cache.open', new=mock_open()) as open_mock,\

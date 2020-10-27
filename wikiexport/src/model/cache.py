@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from src.utils import repeat_if_exception
 
 class Cache:
 
@@ -44,6 +45,7 @@ class LocalCache(Cache):
         return dt in self.cache
 
     @classmethod
+    @repeat_if_exception(message='Something went wrong when populating the cache', nb_times=3)
     def _populate_cache(cls) -> dict:
         cache = {}
 
@@ -56,6 +58,7 @@ class LocalCache(Cache):
 
         return cache
 
+    @repeat_if_exception(message='Something went wrong when saving the cache', nb_times=3)
     def _save_cache(self) -> None:
         with open(self.CACHE_FILE_PATH, 'w') as file_handle:
             for dt, export_path in self.cache.items():

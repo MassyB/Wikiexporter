@@ -9,10 +9,7 @@ import os
 import requests
 
 from src.model.pageview import Pageview
-
-
-class WikimediaFailedDownloadException(Exception):
-    pass
+from src.utils import repeat_if_exception
 
 
 class Wikimedia:
@@ -20,11 +17,13 @@ class Wikimedia:
     DIR_PATH = '/tmp'
 
     @classmethod
+    @repeat_if_exception(message='Something went wrong when downloading the pagesviews data', nb_times=3)
     def get_pageviews(cls, dt: datetime) -> Generator['Pageview', None, None]:
         pageview_url = cls._get_pageview_url(dt)
         file_path = cls._download_file(pageview_url, dir_path=cls.DIR_PATH)
         for line in cls._read_lines(file_path):
             yield Pageview.instance_from_pageview_line(line)
+        #todo remove file
 
     @classmethod
     def _get_pageview_url(cls, dt: datetime) -> str :
@@ -40,11 +39,14 @@ class Wikimedia:
         :param chunk_size: the chunks we will download into RAM
         :return: None
         """
+
         file_name = url.split('/')[-1]
         file_path = os.path.join(dir_path, file_name)
-        response = requests.get(url=url, stream=True) #todo what if there is an error
+        response = requests.get(url=url, stream=True)
+
         if response.status_code != requests.codes.ok:
-           raise WikimediaFailedDownloadException()
+           raise Exception(f'Something went wrong when downloading {url}')
+
         with open(file_path, 'wb') as f:
             for chunk in response.iter_content(chunk_size=chunk_size):
                 f.write(chunk)
@@ -58,13 +60,14 @@ class Wikimedia:
         :param file_path:
         :return: Iterable[str] lines of the gzipped file
         """
+
         with gzip.open(file_path, 'rt') as file_handle:
             yield from file_handle
 
     @classmethod
     def get_top_pageviews_per_domain(cls, pageviews: Iterable[Pageview], k=25) -> List[Pageview]:
-        """
-        get the top 25 pages view per domain. use heaps to get
+        """get the top 25 pages view per domain. use heaps to get
+
         :param pageviews:
         :param k:
         :return:

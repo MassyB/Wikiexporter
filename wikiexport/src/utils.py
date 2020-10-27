@@ -1,5 +1,8 @@
-from typing import List
+from typing import List, Callable, Any
 from datetime import datetime, timedelta
+import functools
+
+import click
 
 
 def get_yesterday_datetime_hour() -> str:
@@ -16,3 +19,22 @@ def get_datetime_hours_between(start_datetime: datetime, end_datetime: datetime 
         datetimes.append(start_datetime + delta_hours)
         delta_hours += timedelta(hours=1)
     return datetimes
+
+
+def repeat_if_exception(message: str, nb_times: int = 3) -> Callable:
+
+    def repeat_decorator(func: Callable ) -> Callable:
+
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs) -> Any:
+            for i in range(nb_times):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    click.echo(message)
+                    click.echo(f'Exception {type(e)} occurred with arguments: {e.args}')
+                    click.echo(f'Trying once again. {nb_times - (i + 1)} retries remaining')
+
+        return wrapper
+
+    return repeat_decorator

@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import patch
 
-from src.utils import get_datetime_hours_between, get_yesterday_datetime_hour
-from datetime import datetime, timedelta
+from src.utils import get_yesterday_datetime_hour, get_datetime_hours_between
+from datetime import datetime
 
 
 class TestUtils(unittest.TestCase):

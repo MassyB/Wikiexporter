@@ -2,11 +2,10 @@ import unittest
 from unittest.mock import patch, mock_open
 from requests import codes
 
-from src.model.wikimedia import Wikimedia, WikimediaFailedDownloadException
+from src.model.wikimedia import Wikimedia
 from src.model.pageview import Pageview
 
 class WikimediaTest(unittest.TestCase):
-
 
     def test_get_top_3_pageviews_per_domain(self):
 
@@ -87,7 +86,7 @@ class WikimediaTest(unittest.TestCase):
         dir = Wikimedia.DIR_PATH
 
         with patch('src.model.wikimedia.requests.get') as get_mock, \
-             self.assertRaises(WikimediaFailedDownloadException):
+             self.assertRaises(Exception):
 
             get_mock.return_value.status_code = 400
             Wikimedia._download_file(url, dir)
