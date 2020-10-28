@@ -15,6 +15,8 @@ class BlackList:
     def get_pageviews_blacklist(cls) -> Set[str]:
         if not cls.PAGEVIEWS_BLACKLIST:
             response = requests.get(cls.BLACKLIST_URL, stream=True)
+            if response.status_code != response.ok:
+                raise Exception('Black list could not be downloaded')
             for line in response.iter_lines():
                 pageview = Pageview.instance_from_balcklist(str(line))
                 cls.PAGEVIEWS_BLACKLIST.add(pageview)

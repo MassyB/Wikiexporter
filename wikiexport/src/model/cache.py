@@ -59,7 +59,7 @@ class LocalCache(Cache):
         return cache
 
     @repeat_if_exception(message='Something went wrong when saving the cache', nb_times=3)
-    def _save_cache(self) -> None:
+    def save_cache(self) -> None:
         with open(self.CACHE_FILE_PATH, 'w') as file_handle:
             for dt, export_path in self.cache.items():
                 dt_str = dt.strftime(self.DATETIME_FORMAT)

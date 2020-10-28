@@ -32,10 +32,20 @@ def main(start_datetime, end_datetime, output, aws_access_key_id, aws_secret_acc
     writer = Writer.instantiate_writer(output, aws_access_key_id, aws_secret_access_key)
 
     for datetime_hour in datetime_hours:
+        click.echo(click.style(f'processing request for {datetime_hour}', fg='green'))
         if datetime_hour not in cache:
+            click.echo(click.style('Downloading data ...', fg='green'))
             pageviews = Wikimedia.get_pageviews(datetime_hour)
+            click.echo(click.style('Filtering data ...', fg='green'))
             filtered_pageviews = (pageview for pageview in pageviews if pageview not in pageviews_blacklist)
+            click.echo(click.style('Computing top 25 for each domain ...', fg='green'))
             top_pageviews_per_domain = Wikimedia.get_top_pageviews_per_domain(filtered_pageviews)
             Wikimedia.sort_pageviews_per_domain_and_views(top_pageviews_per_domain)
+            click.echo(click.style('Writing pageviews ...', fg='green'))
             result_path = writer.write_pageviews(top_pageviews_per_domain, datetime_hour)
             cache.add_entry(datetime_hour, result_path)
+            click.echo(click.style(f'Results can be found in {cache.get_entry(datetime_hour)}', fg='green'))
+        else:
+            click.echo(click.style(f'{datetime_hour} already processed. Result can be found in {cache.get_entry(datetime_hour)}', fg='green'))
+
+    cache.save_cache()

@@ -31,9 +31,10 @@ def repeat_if_exception(message: str, nb_times: int = 3) -> Callable:
                 try:
                     return func(*args, **kwargs)
                 except Exception as e:
-                    click.echo(message)
-                    click.echo(f'Exception {type(e)} occurred with arguments: {e.args}')
+                    click.echo(click.style(message, fg='red'))
+                    click.echo(click.style(f'Exception {type(e)} occurred with arguments: {e.args}', fg='red'))
                     click.echo(f'Trying once again. {nb_times - (i + 1)} retries remaining')
+
 
         return wrapper
 

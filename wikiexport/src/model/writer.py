@@ -47,10 +47,11 @@ class S3Writer(LocalWriter):
                                        aws_secret_access_key=aws_secret_access_key).client('s3')
 
     @repeat_if_exception(message='Something went wrong when writing data to S3', nb_times=3)
-    def write_pageviews(self, pageviews: Iterable['Pageview'], dt: datetime) -> None:
+    def write_pageviews(self, pageviews: Iterable['Pageview'], dt: datetime) -> str:
         local_file_path = super().write_pageviews(pageviews, dt)
         bucket, object_name = self._get_bucket_and_object(dt)
         self.s3_client.upload_file(local_file_path, bucket, object_name)
+        return f'{bucket}/{object_name}'
 
     def _get_bucket_and_object(self, dt: datetime) -> Tuple[str, str]:
         parsed_url = parse.urlparse(self.s3_dir_path)

@@ -4,9 +4,10 @@ from typing import List, Iterable, Generator
 from collections import defaultdict
 import heapq
 import itertools
-
 import os
+
 import requests
+import click
 
 from src.model.pageview import Pageview
 from src.utils import repeat_if_exception
@@ -21,9 +22,11 @@ class Wikimedia:
     def get_pageviews(cls, dt: datetime) -> Generator['Pageview', None, None]:
         pageview_url = cls._get_pageview_url(dt)
         file_path = cls._download_file(pageview_url, dir_path=cls.DIR_PATH)
+
         for line in cls._read_lines(file_path):
             yield Pageview.instance_from_pageview_line(line)
-        #todo remove file
+
+
 
     @classmethod
     def _get_pageview_url(cls, dt: datetime) -> str :
