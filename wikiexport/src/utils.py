@@ -27,14 +27,14 @@ def repeat_if_exception(message: str, nb_times: int = 3) -> Callable:
 
         @functools.wraps(func)
         def wrapper(*args, **kwargs) -> Any:
-            for i in range(nb_times):
+            for i in range(nb_times - 1):
                 try:
                     return func(*args, **kwargs)
                 except Exception as e:
                     click.echo(click.style(message, fg='red'))
                     click.echo(click.style(f'Exception {type(e)} occurred with arguments: {e.args}', fg='red'))
                     click.echo(f'Trying once again. {nb_times - (i + 1)} retries remaining')
-
+            return func(*args, **kwargs)
 
         return wrapper
 
