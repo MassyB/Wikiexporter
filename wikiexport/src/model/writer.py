@@ -111,9 +111,9 @@ class S3Writer(Writer):
         csv_content = '\n'.join(csv_lines)
         bucket, object_name = self._get_bucket_and_object(dt)
         object_path = f's3://{bucket}/{object_name}'
-        response = self.s3_client.upload_object(Body=csv_content, Bucket=bucket, Key=object_name)
+        response = self.s3_client.put_object(Body=csv_content, Bucket=bucket, Key=object_name)
 
-        if response.get('HTTPStatusCode', None) != 200:
+        if response.get('ResponseMetadata').get('HTTPStatusCode', None) != 200:
             raise Exception(f'Object upload to {object_path} failed')
 
         return object_path
