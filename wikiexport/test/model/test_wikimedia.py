@@ -90,4 +90,3 @@ class WikimediaTest(unittest.TestCase):
 
             get_mock.return_value.status_code = 400
             Wikimedia._download_file(url, dir)
-
