@@ -3,6 +3,7 @@ from typing import Set
 from src.model.pageview import Pageview
 from src.utils import repeat_if_exception
 
+
 import requests
 
 
@@ -15,7 +16,7 @@ class BlackList:
     def get_pageviews_blacklist(cls) -> Set[str]:
         if not cls.PAGEVIEWS_BLACKLIST:
             response = requests.get(cls.BLACKLIST_URL, stream=True)
-            if response.status_code != response.ok:
+            if response.status_code != requests.codes.ok:
                 raise Exception('Black list could not be downloaded')
             for line in response.iter_lines():
                 pageview = Pageview.instance_from_balcklist(str(line))

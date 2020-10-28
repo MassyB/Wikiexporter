@@ -51,10 +51,10 @@ class S3Writer(LocalWriter):
         local_file_path = super().write_pageviews(pageviews, dt)
         bucket, object_name = self._get_bucket_and_object(dt)
         self.s3_client.upload_file(local_file_path, bucket, object_name)
-        return f'{bucket}/{object_name}'
+        return f's3://{bucket}/{object_name}'
 
     def _get_bucket_and_object(self, dt: datetime) -> Tuple[str, str]:
         parsed_url = parse.urlparse(self.s3_dir_path)
-        bucket, dir_path = parsed_url.netloc, parsed_url.path
+        bucket, dir_path = parsed_url.netloc, parsed_url.path[1:]
         dt_str = dt.strftime(S3Writer.FILE_PATTERN)
-        return bucket, f'{dir_path}/{dt_str}'
+        return bucket, f'{dir_path}/{dt_str}.csv'
