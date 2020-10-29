@@ -18,18 +18,18 @@ In order to process data for a single date and save it in tmp
 docker run -v /tmp:/tmp wikiexporter wikiexport --start-datetime=20201023T01:00:00  --output=/tmp
 ```
 
-To process data for a date range and save it in any directory and still use the cache (which by default uses /tmp) you have the code below 
+To process data for a date range and save it in any directory and still use the cache (which by default uses /tmp)
 
 ```
 docker run -v /tmp:/tmp -v /tmp:/user/src/app/wikiexport/export_data \
 wikiexporter wikiexport --start-datetime=20201023T01:00:00  --end-datetime=20201023T03:00:00 --output=export_data
 ```
 
-To save data in S3. It the volum is omitted the cache is created every time. because it's in the container (inside /tmp by default)
+To save data in S3 for a date range. If the volume is omitted the cache is empty every time because it's in the container (inside /tmp by default)
 
 ```
 docker run -v /tmp:/tmp -v /tmp:/user/src/app/wikiexport/export_data \
-wikiexporter wikiexport --start-datetime=20201023T01:00:00  --start-datetime=20201023T03:00:00 \
+wikiexporter wikiexport --start-datetime=20201023T01:00:00  --end-datetime=20201023T03:00:00 \
 --output=s3://datadog-bucket-1234/my-directory --aws-access-key-id=my-key-id --aws-secret-access-key=my-secret-key
 ```
 
@@ -104,6 +104,11 @@ and I can take advantage of python's data model by overriding magic methods (`__
 
 ## Clean code
 
+I tried to uses typing hints in the signature of the function to give an idea to the reader of the expected input/output
+I tried to document all the functions, methods and classes
+I used generators when I felt that memory consumptions could be optimized epecially when downloading large dump files
+I used used a function decorator in order to keep exception handling and retries in one single place in the code base namely `utils.repeat_if_exception`
+
 ## Unit Tests
 
 All the unit tests are under the test directory. I tried to cover as many code paths as I could. In order to do so I used mock objects to mock 
@@ -111,3 +116,11 @@ externals services: file IO with `open` built-in or networking with `requests`.
 
 ## Improvements 
 
+If we were to execute this application for every hour of the day we can:
+* hava a CRON Job to execute the `docker run -v /tmp:/tmp wikieport --start-datetime=20201023T00:00:00`
+* If we have an orchestration solution like Apache Airflow we can execute this application as a task in a DAG and use jinja templates for the `--start-datetime` argument
+
+This is intended to be a CLI application that handles small amount of data. If we wanted to scale, implementing the top 25 using python standard library would be challenging instead we can use 
+data processing frameworks like (Apache BEAM or Spark) to handle such amount of data. Both frameworks support operations like filtering, grouping and aggregating.
+
+Also in order to handle scale the cache part can be replace by a more robust and feature rich solution like redis/memcache which allows for several users using the application to benefit from all the already executed requests
