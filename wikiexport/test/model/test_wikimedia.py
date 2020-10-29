@@ -7,6 +7,7 @@ from src.model.pageview import Pageview
 
 class WikimediaTest(unittest.TestCase):
 
+
     def test_get_top_3_pageviews_per_domain(self):
 
         pageviews = [# domain a
@@ -44,6 +45,7 @@ class WikimediaTest(unittest.TestCase):
 
         self.assertEqual(expected_top_3_pageviews, actual_top_3_pageviews)
 
+
     def test_sort_pageviews_per_domain_and_view_count(self):
 
         pageviews = [Pageview(domain='ab', page_title='page2', view_count=33),
@@ -65,7 +67,9 @@ class WikimediaTest(unittest.TestCase):
 
         self.assertEqual(expected_sorted_pageviews, pageviews)
 
+
     def test_download_url_success(self):
+
         url = 'https://dumps.wikimedia.org/other/pageviews/2020/2020-01/pageviews-20200101-010000.gz'
         dir = Wikimedia.DIR_PATH
         expected_file_path = f'{dir}/pageviews-20200101-010000.gz'

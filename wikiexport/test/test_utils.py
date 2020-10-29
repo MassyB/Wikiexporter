@@ -9,6 +9,7 @@ class TestUtils(unittest.TestCase):
 
 
     def test_get_yesterday_datetime_hour(self):
+
         with patch('src.utils.datetime') as mocked_datetime:
 
             mocked_datetime.now.return_value = datetime(2020, 1, 2, 23, 56, 23)

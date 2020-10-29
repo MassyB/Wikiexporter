@@ -10,10 +10,12 @@ class LocalCacheTest(TestCase):
 
 
     def setUp(self):
+
         LocalCache._remove_instance()
 
 
     def test_instantiated_once(self):
+
         file_path_to_open = LocalCache.CACHE_FILE_PATH
 
         with patch('src.model.cache.open', new=mock_open()) as open_mock,\
@@ -34,6 +36,7 @@ class LocalCacheTest(TestCase):
 
 
     def test_initialization_of_cache(self):
+
         file_content = '\n'.join(['20200101T01:00:00,tmp/pageviews-2020010T01:00:00.csv',
                                   '20200102T01:00:00,s3://datadog/de/pageviews-20200102T01:00:00.csv'])
 
@@ -45,6 +48,7 @@ class LocalCacheTest(TestCase):
             self.assertEqual(local_cache.cache, expected_cache)
 
     def test_cache_hit(self):
+
         file_content = '\n'.join(['20200101T01:00:00,tmp/pageviews-2020010T01:00:00.csv',
                                   '20200102T01:00:00,s3://datadog/de/pageviews-20200102T01:00:00.csv'])
         expected_value = 'tmp/pageviews-2020010T01:00:00.csv'
@@ -57,6 +61,7 @@ class LocalCacheTest(TestCase):
 
 
     def test_cache_miss(self):
+
         file_content = '\n'.join(['20200101T01:00:00,tmp/pageviews-2020010T01:00:00.csv',
                                   '20200102T01:00:00,s3://datadog/de/pageviews-20200102T01:00:00.csv'])
         expected_value = None
@@ -65,7 +70,3 @@ class LocalCacheTest(TestCase):
 
 
             self.assertEqual(local_cache.get_entry(datetime(2020, 1, 3, 1)), expected_value)
-
-
-
-
