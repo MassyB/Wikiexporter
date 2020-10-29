@@ -86,7 +86,7 @@ class LocalCache(Cache):
 
 
     def get_entry(self, dt: datetime) -> str:
-        """ Get the path to CVS file fo the request if any saved in cache
+        """ Get the path to CSV file fo the request if any saved in cache
 
         :param dt:
         :return:

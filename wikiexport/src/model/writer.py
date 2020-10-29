@@ -10,7 +10,7 @@ import boto3
 
 class Writer:
     """
-    This class is responsible of writing CVS to storage
+    This class is responsible of writing CSV to storage
     """
 
     HEADER = 'domain,page_title,pageview_count'
