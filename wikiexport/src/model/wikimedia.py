@@ -100,7 +100,7 @@ class Wikimedia:
         :return: Unsorted List of top K pageviews per domain
         """
 
-        top_k_per_domain = defaultdict(lambda: list())
+        top_k_per_domain = defaultdict(list)
 
         for pageview in pageviews:
             domain, view_count = pageview.domain, pageview.view_count

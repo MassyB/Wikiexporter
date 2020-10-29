@@ -20,7 +20,7 @@ class Writer:
     @classmethod
     def instantiate_writer(cls, output_path: str, aws_access_key_id: str = None,
                            aws_secret_access_key: str = None) -> 'Writer':
-        """ A factory method to choose with type of Writer to instanciate. If AWS credentials are not null
+        """ A factory method to choose which type of Writer to instantiate. If AWS credentials are not null
         priority is given to S3Writer
 
         :param: output_path: path where to save the result CSV can be local or on S3 dir path (s3://mybucket/my_dir
