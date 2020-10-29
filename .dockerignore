@@ -6,3 +6,6 @@
 *.swp
 
 __pycache__
+
+README.md
+notes.txt

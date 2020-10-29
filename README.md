@@ -1,24 +1,44 @@
-some commands:
+# Instalation
 
-to build the image:
-* docker build -t wikiexport_container .
+Using `docker` you need to build the image and use it as a command line to execute the CLI application
 
-to execute the docker:
+```sh
+docker build -t wikiexporter .
+```
 
-* docker run wikiexport_container wikiexport --help
-* docker run wikiexport_container wikiexport --start-datetime=20201023T01:00:00
-* docker run wikiexport_container python -m unitest -v
+In order to see what are the inputs expected by the CLI
 
-* docker run -v /tmp:/tmp wikiexport wikiexport --start-datetime=20200901T02:00:00 
-* docker run -v /tmp:/usr/src/app/export_data wikiexport wikiexport --start-datetime=20200901T02:00:00 --output=export_data
-* docker run -v /tmp:/usr/src/app/export_data -v /tmp:/tmp \
-wikiexport wikiexport --start-datetime=20200901T02:00:00 --output=export_data
-notes:
-* how to add a volume for local storage
------------------------------------------
-final notes on the design
+```
+docker run wikiexporter wikiexport --help
+```
 
-# Context:
+In order to process data for a single date and save it in tmp
+
+```
+docker run -v /tmp:/tmp wikiexporter wikiexport --start-datetime=20201023T01:00:00  --output=/tmp
+```
+
+To process data for a date range and save it in any directory and still use the cache (which by default uses /tmp) you have the code below 
+
+```
+docker run -v /tmp:/tmp -v /tmp:/user/src/app/wikiexport/export_data \
+wikiexporter wikiexport --start-datetime=20201023T01:00:00  --end-datetime=20201023T03:00:00 --output=export_data
+```
+
+To save data in S3. It the volum is omitted the cache is created every time. because it's in the container (inside /tmp by default)
+
+```
+docker run -v /tmp:/tmp -v /tmp:/user/src/app/wikiexport/export_data \
+wikiexporter wikiexport --start-datetime=20201023T01:00:00  --start-datetime=20201023T03:00:00 \
+--output=s3://datadog-bucket-1234/my-directory --aws-access-key-id=my-key-id --aws-secret-access-key=my-secret-key
+```
+
+To run unitests
+
+```
+docker run wikiexporter python -m unittests -v
+```
+# Solution Design:
 
 This application is designed to run on a local machine as a CLI. It revolves around four main components:
 
@@ -82,11 +102,12 @@ The abstract `Writer` class uses some factory method to chose which class to ins
 This class encodes the data we are dealing with in this application. I decided to go with a proper class instead of manipulating tuples (or named tuples) because I think it's clearer 
 and I can take advantage of python's data model by overriding magic methods (`__eq__` and `__hash__` for example) 
 
-## Tests
+## Clean code
 
+## Unit Tests
 
-
-## Deployment/Packaging
+All the unit tests are under the test directory. I tried to cover as many code paths as I could. In order to do so I used mock objects to mock 
+externals services: file IO with `open` built-in or networking with `requests`.
 
 ## Improvements 
 
