@@ -1,35 +1,61 @@
-# Instalation
+# Installation
 
-Using `docker` you need to build the image and use to execute the CLI application
+Using `docker` you need to build the image to execute the CLI application
 
 ```
-docker build -t wikiexporter .
+> docker build -t wikiexporter .
 ```
 
 In order to see what are the inputs expected by the CLI
 
 ```
-docker run wikiexporter wikiexport --help
+> docker run wikiexporter wikiexport --help
+Usage: wikiexport [OPTIONS]
+
+Options:
+  --start-datetime [%Y%m%dT%H:00:00]
+                                  datetime (truncated to the hour) of the data
+                                  to process  [default: (20201029T10:00:00);
+                                  required]
+
+  --end-datetime [%Y%m%dT%H:00:00]
+                                  end datetime inclusive (truncated to the
+                                  hour) of the datetime range to process
+
+  --output TEXT                   output path where to put CSV files. Can be a
+                                  directory or an S3 bucket of the form
+                                  s3://mybucket/my-folder  [required]
+
+  --aws-access-key-id TEXT        AWS credentials: ACCESS KEY ID
+  --aws-secret-access-key TEXT    AWS credentials: SECRET ACCESS KEY ID
+  --help                          Show this message and exit.
+
 ```
 
 In order to process data for a single date and save it in `/tmp`.
 In order to retrieve the final CSV file in the host's `/tmp` you must bind it to the directory specified by the `--output` argument
 
 ```
-docker run -v /tmp:/tmp wikiexporter wikiexport --start-datetime=20201023T01:00:00  --output=/tmp
+> docker run -v /tmp:/tmp wikiexporter wikiexport --start-datetime=20201023T01:00:00  --output=/tmp
+```
+
+To process the default yesterday's datetime data 
+
+```
+> docker run -v /tmp:/tmp wikiexporter wikiexport
 ```
 
 To process data for a date range and save it in any directory and still use the cache (which by default uses `/tmp`)
 
 ```
-docker run -v /tmp:/tmp -v /tmp:/user/src/app/wikiexport/export_data \
+> docker run -v /tmp:/tmp -v /tmp:/user/src/app/wikiexport/export_data \
 wikiexporter wikiexport --start-datetime=20201023T01:00:00  --end-datetime=20201023T03:00:00 --output=export_data
 ```
 
 To save data in S3 for a date range. If the volume is omitted the cache is empty every time because it's in the container (inside `/tmp` by default)
 
 ```
-docker run -v /tmp:/tmp -v /tmp:/user/src/app/wikiexport/export_data \
+> docker run -v /tmp:/tmp -v /tmp:/user/src/app/wikiexport/export_data \
 wikiexporter wikiexport --start-datetime=20201023T01:00:00  --end-datetime=20201023T03:00:00 \
 --output=s3://datadog-bucket-1234/my-directory --aws-access-key-id=my_key_id --aws-secret-access-key=my_secret_key
 ```
@@ -37,8 +63,10 @@ wikiexporter wikiexport --start-datetime=20201023T01:00:00  --end-datetime=20201
 To run unittests
 
 ```
-docker run wikiexporter python -m unittests -v
+> docker run wikiexporter python -m unittest -v
 ```
+
+
 # Design:
 
 This application is designed to run on a local machine as a CLI. It revolves around four main components:
