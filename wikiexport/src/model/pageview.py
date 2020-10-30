@@ -18,7 +18,7 @@ class Pageview:
 
 
     @classmethod
-    def instance_from_balcklist(cls, blacklist_line: str) -> 'Pageview':
+    def instance_from_balcklist_line(cls, blacklist_line: str) -> 'Pageview':
         """ Factory method to generate pageview instance from a blacklist line
 
         :param blacklist_line: string of blaclist data of the form domain,page_veiw
@@ -31,7 +31,7 @@ class Pageview:
 
 
     def __init__(self, domain: str, page_title: str, view_count: int) -> None:
-        """ Initialisation of a pageview object
+        """ Initialization of a pageview object
 
         :param domain: domain of the page
         :param page_title: title of the page

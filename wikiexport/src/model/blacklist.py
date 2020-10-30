@@ -29,7 +29,7 @@ class BlackList:
             if response.status_code != requests.codes.ok:
                 raise Exception('Black list could not be downloaded')
             for line in response.iter_lines():
-                pageview = Pageview.instance_from_balcklist(str(line))
+                pageview = Pageview.instance_from_balcklist_line(str(line))
                 cls.PAGEVIEWS_BLACKLIST.add(pageview)
 
         return cls.PAGEVIEWS_BLACKLIST

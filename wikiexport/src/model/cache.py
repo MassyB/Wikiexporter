@@ -44,7 +44,7 @@ class LocalCache(Cache):
 
     @classmethod
     def get_instance(cls) -> 'LocalCache':
-        """Get the only instance of LocalCache instantiate it if needed
+        """Get the only instance of LocalCache, instantiate it if needed
 
         :return: The only instance of LocalCache
         """
@@ -67,7 +67,6 @@ class LocalCache(Cache):
 
     def __init__(self) -> None:
         """ Populate the cache the first time the only instance is instantiated
-
         """
 
         if LocalCache.__instance is None:
@@ -78,7 +77,7 @@ class LocalCache(Cache):
 
 
     def set_entry(self, dt: datetime, file_path: str):
-        """ Add an Entry in the cache (in Memory) and replaces a previously set entry for the same key
+        """ Add an Entry in the cache (in Memory) and replaces a previously set entry with the same key
 
         :param dt: datetime of the request
         :param file_path: path where the CSV file is saved
@@ -89,10 +88,10 @@ class LocalCache(Cache):
 
 
     def get_entry(self, dt: datetime) -> str:
-        """ Get the path to CSV file fo the request if any saved in cache
+        """ Get the path to CSV file of the request if any saved in cache
 
-        :param dt:
-        :return:
+        :param dt: datetime of the request
+        :return: path to the CSV file
         """
 
         return self.cache.get(dt, None)
@@ -100,7 +99,7 @@ class LocalCache(Cache):
 
     def __contains__(self, dt: datetime) -> bool:
         """ inclusion test that relies on the __contains__ magic method.
-        Localcache can be used with the in operator: datetime.now() in cache
+        LocalCache can be used with the in operator: datetime.now() in cache
 
         :param dt: datetime of the request
         :return: True if datetime in cache, false otherwise
