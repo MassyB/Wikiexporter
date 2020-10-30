@@ -140,10 +140,10 @@ and I can take advantage of python's data model by overriding magic methods (`__
 
 ## Clean code
 
-* I tried to uses typing hints in the signature of the function to give an idea to the reader of the expected input/output
+* I tried to uses typing hints in the signature of the functions to give an idea to the reader of the expected input/output
 * I tried to document all the functions, methods and classes
 * I used generators when I felt that memory consumptions could be optimized epecially when downloading large dump files
-* I used used a function decorator in order to keep exception handling and retries in one single place in the code base namely `utils.repeat_if_exception`
+* I used a function decorator in order to keep exception handling and retries in one single place in the code base namely `utils.repeat_if_exception` function
 
 
 ## Unit Tests
@@ -157,7 +157,7 @@ externals services: file IO with `open` built-in or networking with `requests`.
 
 **What might change about your solution if this application needed to run automatically for each hour of the day?**
 
-* We can have a CRON Job to execute the `docker run -v /tmp:/tmp wikieport ` and we would modify the default value of `--start-datetime` to be the last hour. This is a simple solution if we don't have any orchestration framework at our disposal.
+* We can have a CRON Job to execute the `docker run -v /tmp:/tmp wikiexport` and we would modify the default value of `--start-datetime` to be the last hour. This is a simple solution if we don't have any orchestration framework at our disposal.
 * If we have an orchestration solution like Apache Airflow we can execute this application as a task (using `BashOperator`) in a DAG and use jinja templates for the `--start-datetime` argument to get the current hour. 
 * In Airflow we can use the docker operator to execute `wikiexport` or we can also use the `KubernetesPodOperator` in order to delegate work outside Airflow as much as possible with the benefits of K8s doing the heavy lifting for us
 
@@ -174,14 +174,14 @@ externals services: file IO with `open` built-in or networking with `requests`.
 
 **How would you test this application?**
 
-* By covering as much code paths as possible in the unittests.
+* By covering as much code paths as possible in the unittests using more mocks.
 * By executing some requests on a pre-production environment before executing the application in production
 
 
 **How you’d improve on this application design?**
 
 This is intended to be a CLI application that handles small amount of data. If we wanted to scale, implementing the top 25 using python standard library would be very challenging. Instead, we can use 
-data processing frameworks like (Apache BEAM or Apache Spark) to handle such amount of data. Both frameworks support operations like filtering, grouping, aggregating and writing to several IOs.
+data processing frameworks like (Apache BEAM or Apache Spark) to handle big amounts of data. Both frameworks support operations like filtering, grouping, aggregating and writing to several IOs.
 For example, using Apache BEAM we can replace the `Wikimedia` class by a pipeline written also in python. This pipeline can run on a Spark/Flink cluster. That way we can handle a lot more data.
 
 Apache Airflow should be used to start execution of those pipelines (Spark/BEAM).

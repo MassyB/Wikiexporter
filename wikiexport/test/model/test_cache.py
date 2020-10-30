@@ -56,7 +56,6 @@ class LocalCacheTest(TestCase):
         with patch('src.model.cache.open', new=mock_open(read_data=file_content)):
             local_cache = LocalCache.get_instance()
 
-
             self.assertEqual(local_cache.get_entry(datetime(2020, 1, 1, 1)), expected_value)
 
 
@@ -67,6 +66,5 @@ class LocalCacheTest(TestCase):
         expected_value = None
         with patch('src.model.cache.open', new=mock_open(read_data=file_content)):
             local_cache = LocalCache.get_instance()
-
 
             self.assertEqual(local_cache.get_entry(datetime(2020, 1, 3, 1)), expected_value)
