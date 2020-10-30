@@ -11,7 +11,7 @@ from src.model.writer import Writer
 @click.option('--start-datetime',
               help='datetime (truncated to the hour) of the data to process',
               type=click.DateTime(formats=['%Y%m%dT%H:00:00']),
-              default=get_yesterday_datetime_hour(), show_default = get_yesterday_datetime_hour() , required=True)
+              default=get_yesterday_datetime_hour(), show_default=get_yesterday_datetime_hour() , required=True)
 
 @click.option('--end-datetime',
               help='end datetime inclusive (truncated to the hour) of the datetime range to process',
@@ -19,7 +19,7 @@ from src.model.writer import Writer
 
 @click.option('--output',
               help= 'output path where to put CSV files. Can be a directory or an S3 bucket of the form s3://mybucket/my-folder',
-              type=click.STRING, required=True, default='/tmp')
+              type=click.STRING, required=True, default='/tmp', show_default='/tmp')
 
 @click.option('--aws-access-key-id', type=click.STRING, help='AWS credentials: ACCESS KEY ID')
 @click.option('--aws-secret-access-key', type=click.STRING, help='AWS credentials: SECRET ACCESS KEY ID')
