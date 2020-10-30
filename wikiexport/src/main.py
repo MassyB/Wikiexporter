@@ -22,7 +22,7 @@ from src.model.writer import Writer
               type=click.STRING, required=True, default='/tmp', show_default='/tmp')
 
 @click.option('--aws-access-key-id', type=click.STRING, help='AWS credentials: ACCESS KEY ID')
-@click.option('--aws-secret-access-key', type=click.STRING, help='AWS credentials: SECRET ACCESS KEY ID')
+@click.option('--aws-secret-access-key', type=click.STRING, help='AWS credentials: SECRET ACCESS KEY')
 
 def main(start_datetime, end_datetime, output, aws_access_key_id, aws_secret_access_key):
 

@@ -15,7 +15,7 @@ Usage: wikiexport [OPTIONS]
 Options:
   --start-datetime [%Y%m%dT%H:00:00]
                                   datetime (truncated to the hour) of the data
-                                  to process  [default: (20201029T10:00:00);
+                                  to process  [default: (20201029T11:00:00);
                                   required]
 
   --end-datetime [%Y%m%dT%H:00:00]
@@ -24,10 +24,11 @@ Options:
 
   --output TEXT                   output path where to put CSV files. Can be a
                                   directory or an S3 bucket of the form
-                                  s3://mybucket/my-folder  [required]
+                                  s3://mybucket/my-folder  [default: (/tmp);
+                                  required]
 
   --aws-access-key-id TEXT        AWS credentials: ACCESS KEY ID
-  --aws-secret-access-key TEXT    AWS credentials: SECRET ACCESS KEY ID
+  --aws-secret-access-key TEXT    AWS credentials: SECRET ACCESS KEY
   --help                          Show this message and exit.
 
 ```
@@ -55,9 +56,8 @@ wikiexporter wikiexport --start-datetime=20201023T01:00:00  --end-datetime=20201
 To save data in S3 for a date range. If the volume is omitted the cache is empty every time because it's in the container (inside `/tmp` by default)
 
 ```
-> docker run -v /tmp:/tmp -v /tmp:/user/src/app/wikiexport/export_data \
-wikiexporter wikiexport --start-datetime=20201023T01:00:00  --end-datetime=20201023T03:00:00 \
---output=s3://datadog-bucket-1234/my-directory --aws-access-key-id=my_key_id --aws-secret-access-key=my_secret_key
+> docker run -v /tmp:/tmp wikiexporter wikiexport --start-datetime=20201022T01:00:00  --end-datetime=20201022T02:00:00 \
+--output=s3://datadog-bucket-1234/my-directory/your-tests --aws-access-key-id=my_key_id --aws-secret-access-key=my_secret_key
 ```
 
 To run unittests
@@ -67,7 +67,7 @@ To run unittests
 ```
 
 
-# Design:
+# Design
 
 This application is designed to run on a local machine as a CLI. It revolves around four main components:
 
