@@ -30,7 +30,7 @@ class Wikimedia:
         It's getting one line a time from secondary storage and converts it to a Pageview instance
 
         :param dt: datetime of the request
-        :return: gener
+        :return: generator on the downloaded pageviews
         """
 
         pageview_url = cls._get_pageview_url(dt)
@@ -121,8 +121,8 @@ class Wikimedia:
 
     @classmethod
     def sort_pageviews_per_domain_and_views(cls, pageviews: List['Pageview']) -> None:
-        """ Sort the pagviews per domain and view_count ascending. The sort is done in place.
-        Time complexity is O(n log n)
+        """ Sort the pageviews per domain and view_count ascending. The sort is done in place.
+        Time complexity is O(n log n) n being the number of elements in pageviews
 
         :param pageviews: list of pageviews to sort
         :return: None
