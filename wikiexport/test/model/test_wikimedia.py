@@ -31,7 +31,7 @@ class WikimediaTest(unittest.TestCase):
                                     Pageview(domain='a', page_title='page1', view_count=12),
                                     Pageview(domain='a', page_title='page5', view_count=33),
                                     Pageview(domain='a', page_title='page2', view_count=10),
-                                    # domain b
+                                    # domain ab
                                     Pageview(domain='ab', page_title='page1', view_count=12),
                                     Pageview(domain='ab', page_title='page2', view_count=33),
                                     Pageview(domain='ab', page_title='page3', view_count=2),
