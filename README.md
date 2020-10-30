@@ -87,10 +87,10 @@ The main data structure is a dictionary where each key represents a domain and e
 I decided to go with my own implementation (without the help of external libraries) because it's fairly simple and the data is already pre aggregated up to the 
 domain and page title. 
 
-A min heap is a complete binary tree where the value of each node is less than the values of it's children making the minimum value accessible in a very efficient manner in the root.
+A min heap is a complete binary tree where the value of each node is less than the values of its children making the minimum value accessible in a very efficient manner in the root.
 This data structure helps us keep the K largest elements of a collection. In our case we compare between pageviews using number of views
 ```
-Heap
+Heap (size=3)
 
   2
  / \
@@ -98,7 +98,7 @@ Heap
 
 new_element = 4
 
-Heap
+Heap (size=3)
 
   4
  / \
@@ -106,13 +106,13 @@ Heap
 ```
 
 The time complexity of this method is O(n log k) where n is the number of elements in the dump file. 
-Because we know k equals 25 The time complexity is O(n).
+Because we know k equals 25 the time complexity is O(n).
 
 
 #### Usage of generators 
 
-In the functions that download the dump file and reads a gzipped file I make the choice to use generators instead of loading all the content of the file in memory. This prevents too much memory consumption at the cost of slow disk reads.
-Of course this doesn't mean that this application can support a TB size dump file (if all the pageviews are not filtered). 
+In the functions that download the dump file and read a gzipped file I make the choice to use generators instead of loading all the content of the file in memory. This prevents too much memory consumption at the cost of slow disk reads.
+Of course, this doesn't mean that this application can support a TB size dump file (if all the pageviews are not filtered). 
 
 
 ### Cache
@@ -140,10 +140,10 @@ and I can take advantage of python's data model by overriding magic methods (`__
 
 ## Clean code
 
-I tried to uses typing hints in the signature of the function to give an idea to the reader of the expected input/output
-I tried to document all the functions, methods and classes
-I used generators when I felt that memory consumptions could be optimized epecially when downloading large dump files
-I used used a function decorator in order to keep exception handling and retries in one single place in the code base namely `utils.repeat_if_exception`
+* I tried to uses typing hints in the signature of the function to give an idea to the reader of the expected input/output
+* I tried to document all the functions, methods and classes
+* I used generators when I felt that memory consumptions could be optimized epecially when downloading large dump files
+* I used used a function decorator in order to keep exception handling and retries in one single place in the code base namely `utils.repeat_if_exception`
 
 
 ## Unit Tests
