@@ -15,7 +15,7 @@ Usage: wikiexport [OPTIONS]
 Options:
   --start-datetime [%Y%m%dT%H:00:00]
                                   datetime (truncated to the hour) of the data
-                                  to process  [default: (20201029T11:00:00);
+                                  to process  [default: (yesterday's hour);
                                   required]
 
   --end-datetime [%Y%m%dT%H:00:00]
@@ -33,7 +33,7 @@ Options:
 
 ```
 
-In order to process data for a single date and save it in `/tmp`.
+In order to process data for a single datetime and save it in `/tmp`.
 In order to retrieve the final CSV file in the host's `/tmp` you must bind it to the directory specified by the `--output` argument
 
 ```
@@ -46,14 +46,14 @@ To process the default yesterday's datetime data
 > docker run -v /tmp:/tmp wikiexporter wikiexport
 ```
 
-To process data for a date range and save it in any directory and still use the cache (which by default uses `/tmp`)
+To process data for a datetime range and save it in any directory and still use the cache (which by default uses `/tmp`)
 
 ```
 > docker run -v /tmp:/tmp -v /tmp:/user/src/app/wikiexport/export_data \
 wikiexporter wikiexport --start-datetime=20201023T01:00:00  --end-datetime=20201023T03:00:00 --output=export_data
 ```
 
-To save data in S3 for a date range. If the volume is omitted the cache is empty every time because it's in the container (inside `/tmp` by default)
+To save data in S3 for a datetime range. If the volume is omitted the cache is empty every time because it's in the container (inside `/tmp` by default)
 
 ```
 > docker run -v /tmp:/tmp wikiexporter wikiexport --start-datetime=20201022T01:00:00  --end-datetime=20201022T02:00:00 \
@@ -73,7 +73,7 @@ This application is designed to run on a local machine as a CLI. It revolves aro
 
 * **Wikimedia** which is responsible of downloading pageviews data, computing the top 25 for each domain and sort those remaining pageviews
 * **Cache** which is responsible of storing results of previous executions and retrieve them whenever possible in order not to redo work
-* **Blacklist** which is responsible of downloading the previous pageviews and load that for a quicker access
+* **Blacklist** which is responsible of downloading the previous pageviews and load them to memory for a quicker access
 * **Writer** which is responsible of writing data either to local storage or to S3
 
 
@@ -112,7 +112,7 @@ Because we know k equals 25 the time complexity is O(n).
 #### Usage of generators 
 
 In the functions that download the dump file and read a gzipped file I make the choice to use generators instead of loading all the content of the file in memory. This prevents too much memory consumption at the cost of slow disk reads.
-Of course, this doesn't mean that this application can support a TB size dump file (if all the pageviews are not filtered). 
+Of course, this doesn't mean that this application can support a TB size dump file however.
 
 
 ### Cache
@@ -142,7 +142,7 @@ and I can take advantage of python's data model by overriding magic methods (`__
 
 * I tried to uses typing hints in the signature of the functions to give an idea to the reader of the expected input/output
 * I tried to document all the functions, methods and classes
-* I used generators when I felt that memory consumptions could be optimized epecially when downloading large dump files
+* I used generators when I felt that memory consumptions could be optimized especially when downloading large dump files
 * I used a function decorator in order to keep exception handling and retries in one single place in the code base namely `utils.repeat_if_exception` function
 
 
@@ -157,8 +157,8 @@ externals services: file IO with `open` built-in or networking with `requests`.
 
 **What might change about your solution if this application needed to run automatically for each hour of the day?**
 
-* We can have a CRON Job to execute the `docker run -v /tmp:/tmp wikiexport` and we would modify the default value of `--start-datetime` to be the last hour. This is a simple solution if we don't have any orchestration framework at our disposal.
-* If we have an orchestration solution like Apache Airflow we can execute this application as a task (using `BashOperator`) in a DAG and use jinja templates for the `--start-datetime` argument to get the current hour. 
+* We can have a CRON Job to execute the `docker run -v /tmp:/tmp wikiexport` and we would modify the default value of `--start-datetime` to be the last hour. This is a simple solution if we don't have any orchestration framework at our disposal
+* If we have an orchestration solution like Apache Airflow we can execute this application as a task (using `BashOperator`) in a DAG and use jinja templates for the `--start-datetime` argument to get the last hour
 * In Airflow we can use the docker operator to execute `wikiexport` or we can also use the `KubernetesPodOperator` in order to delegate work outside Airflow as much as possible with the benefits of K8s doing the heavy lifting for us
 
 
@@ -174,7 +174,7 @@ externals services: file IO with `open` built-in or networking with `requests`.
 
 **How would you test this application?**
 
-* By covering as much code paths as possible in the unittests using more mocks.
+* By covering as much code paths as possible in the unit tests using more mocks.
 * By executing some requests on a pre-production environment before executing the application in production
 
 
@@ -186,7 +186,7 @@ For example, using Apache BEAM we can replace the `Wikimedia` class by a pipelin
 
 Apache Airflow should be used to start execution of those pipelines (Spark/BEAM).
 
-Also in order to handle scale, the cache part can be replace by a more robust and feature rich solution like redis (which will take the data from a database). It will allow for several users to benefit from all the already executed requests
+Also in order to handle scale, the cache part can be replaced by a more robust and feature rich solution like redis (which will take its data from a database). It will allow for several users to benefit from all the already executed requests
 
 When we handle a datetime range instead of doing the whole work by one single BEAM/Spark job we can take advantage of the fact that the data is partitioned by hour so we can start as many jobs as hours in our datetime range.
-With that solution we reduce latency and redoing work in case of failure is faster because it's quicker to process an hour worth of data than it is to process a day worth of data.
+With that solution we reduce latency and redoing work in case of failure is faster because it's quicker to process an hour worth of data.

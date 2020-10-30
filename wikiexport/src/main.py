@@ -11,7 +11,7 @@ from src.model.writer import Writer
 @click.option('--start-datetime',
               help='datetime (truncated to the hour) of the data to process',
               type=click.DateTime(formats=['%Y%m%dT%H:00:00']),
-              default=get_yesterday_datetime_hour(), show_default=get_yesterday_datetime_hour() , required=True)
+              default=get_yesterday_datetime_hour(), show_default='yesterday\'s hour' , required=True)
 
 @click.option('--end-datetime',
               help='end datetime inclusive (truncated to the hour) of the datetime range to process',

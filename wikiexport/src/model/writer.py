@@ -89,7 +89,7 @@ class S3Writer(Writer):
     def __init__(self, s3_dir_path: str, aws_access_key_id: str, aws_secret_access_key: str) -> None:
         """
 
-        :param s3_dir_path: the bucket and direcory where to save CSV files. Example: s3://mybucket/mydir
+        :param s3_dir_path: the bucket and directory where to save CSV files. Example: s3://mybucket/mydir
         :param aws_access_key_id:
         :param aws_secret_access_key:
         """
