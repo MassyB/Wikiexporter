@@ -2,13 +2,14 @@ from typing import Iterable, Tuple
 from datetime import  datetime
 from os import path
 from urllib import parse
+from abc import ABC, abstractmethod
 
 from src.utils import repeat_if_exception
 
 import boto3
 
 
-class Writer:
+class Writer(ABC):
     """
     This class is responsible of writing CSV to storage
     """
@@ -33,6 +34,7 @@ class Writer:
             return LocalWriter(output_path)
 
 
+    @abstractmethod
     def write_pageviews(self, pageviews: Iterable['Pageview'], dt: datetime) -> str:
         """ Abstract method to write pageviews to storage
 
@@ -41,7 +43,7 @@ class Writer:
         :return: path where the CSV is saved
         """
 
-        raise NotImplementedError()
+        pass
 
 
 class LocalWriter(Writer):

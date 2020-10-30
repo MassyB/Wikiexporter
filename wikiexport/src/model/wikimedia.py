@@ -39,6 +39,8 @@ class Wikimedia:
         for line in cls._read_lines(file_path):
             yield Pageview.instance_from_pageview_line(line)
 
+        os.remove(file_path)
+
 
     @classmethod
     def _get_pageview_url(cls, dt: datetime) -> str :

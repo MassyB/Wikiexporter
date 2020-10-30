@@ -1,12 +1,14 @@
 from datetime import datetime
+from abc import ABC, abstractmethod
 
 from src.utils import repeat_if_exception
 
-class Cache:
+class Cache(ABC):
     """
     An abstract base class for cache capabilities
     """
 
+    @abstractmethod
     def get_entry(self, dt: datetime) -> str:
         """ An abstract method to get the result of dt's (datetime) request
 
@@ -14,9 +16,10 @@ class Cache:
         :return: path to the CSV result file
         """
 
-        raise NotImplementedError()
+        pass
 
 
+    @abstractmethod
     def set_entry(self, dt: datetime) -> None:
         """ An abstract method to set the path of dt's (datetime) request result
 
@@ -24,7 +27,7 @@ class Cache:
         :return: None
         """
 
-        raise NotImplementedError()
+        pass
 
 
 
@@ -74,7 +77,7 @@ class LocalCache(Cache):
             raise Exception('Already instantiated')
 
 
-    def add_entry(self, dt: datetime, file_path: str):
+    def set_entry(self, dt: datetime, file_path: str):
         """ Add an Entry in the cache (in Memory) and replaces a previously set entry for the same key
 
         :param dt: datetime of the request

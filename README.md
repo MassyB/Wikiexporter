@@ -186,7 +186,7 @@ For example, using Apache BEAM we can replace the `Wikimedia` class by a pipelin
 
 Apache Airflow should be used to start execution of those pipelines (Spark/BEAM).
 
-Also in order to handle scale, the cache part can be replace by a more robust and feature rich solution like redis (which will take the data from a database). It will allow for several users using the application to benefit from all the already executed requests
+Also in order to handle scale, the cache part can be replace by a more robust and feature rich solution like redis (which will take the data from a database). It will allow for several users to benefit from all the already executed requests
 
-When we handle a date range instead of doing the whole work by one single BEAM/Spark job we can take advantage of the fact that the data is partitioned by hour so we can start as many jobs as hours in our date range.
-With that solution we reduce latency and redoing work in case of failure is faster because it's quicker to process an hour worth of data than it's to process a day worth of data.
+When we handle a datetime range instead of doing the whole work by one single BEAM/Spark job we can take advantage of the fact that the data is partitioned by hour so we can start as many jobs as hours in our datetime range.
+With that solution we reduce latency and redoing work in case of failure is faster because it's quicker to process an hour worth of data than it is to process a day worth of data.

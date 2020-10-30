@@ -43,7 +43,7 @@ def main(start_datetime, end_datetime, output, aws_access_key_id, aws_secret_acc
             Wikimedia.sort_pageviews_per_domain_and_views(top_pageviews_per_domain)
             click.echo(click.style('Writing pageviews ...', fg='green'))
             result_path = writer.write_pageviews(top_pageviews_per_domain, datetime_hour)
-            cache.add_entry(datetime_hour, result_path)
+            cache.set_entry(datetime_hour, result_path)
             click.echo(click.style(f'Results can be found in {cache.get_entry(datetime_hour)}', fg='green'))
         else:
             click.echo(click.style(f'{datetime_hour} already processed. Result can be found in {cache.get_entry(datetime_hour)}', fg='green'))
