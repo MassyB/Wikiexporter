@@ -1,6 +1,6 @@
 # Instalation
 
-Using `docker` you need to build the image and use it as a command line to execute the CLI application
+Using `docker` you need to build the image and use to execute the CLI application
 
 ```
 docker build -t wikiexporter .
@@ -19,7 +19,7 @@ In order to retrieve the final CSV file in the host's `/tmp` you must bind it to
 docker run -v /tmp:/tmp wikiexporter wikiexport --start-datetime=20201023T01:00:00  --output=/tmp
 ```
 
-To process data for a date range and save it in any directory and still use the cache (which by default uses `/tmp)
+To process data for a date range and save it in any directory and still use the cache (which by default uses `/tmp`)
 
 ```
 docker run -v /tmp:/tmp -v /tmp:/user/src/app/wikiexport/export_data \
@@ -43,10 +43,10 @@ docker run wikiexporter python -m unittests -v
 
 This application is designed to run on a local machine as a CLI. It revolves around four main components:
 
-* *Wikimedia* which is responsible of downloading pageviews data, computing the top 25 for each domain and sort those remaining pageviews
-* *Cache* which is responsible of storing results of previous executions and retrieve them whenever possible in order not to redo work
-* *Blacklist* which is responsible of downloading the previous pageviews and load that for a quicker access
-* *Writer* which is responsible of writing data either to local storage or to S3
+* **Wikimedia** which is responsible of downloading pageviews data, computing the top 25 for each domain and sort those remaining pageviews
+* **Cache** which is responsible of storing results of previous executions and retrieve them whenever possible in order not to redo work
+* **Blacklist** which is responsible of downloading the previous pageviews and load that for a quicker access
+* **Writer** which is responsible of writing data either to local storage or to S3
 
 
 ### Wikimedia
@@ -127,30 +127,30 @@ externals services: file IO with `open` built-in or networking with `requests`.
 ## Improvements 
 
 
-*What might change about your solution if this application needed to run automatically for each hour of the day?*
+**What might change about your solution if this application needed to run automatically for each hour of the day?**
 
-* We can have a CRON Job to execute the `docker run -v /tmp:/tmp wikieport ` and we would modify the default value of `--start-datetime` to be the last hour. This a simple solution if we don't have any orchestration framework at our disposal.
+* We can have a CRON Job to execute the `docker run -v /tmp:/tmp wikieport ` and we would modify the default value of `--start-datetime` to be the last hour. This is a simple solution if we don't have any orchestration framework at our disposal.
 * If we have an orchestration solution like Apache Airflow we can execute this application as a task (using `BashOperator`) in a DAG and use jinja templates for the `--start-datetime` argument to get the current hour. 
 * In Airflow we can use the docker operator to execute `wikiexport` or we can also use the `KubernetesPodOperator` in order to delegate work outside Airflow as much as possible with the benefits of K8s doing the heavy lifting for us
 
 
-*What additional things would you want to operate this application in a production setting?*
+**What additional things would you want to operate this application in a production setting?**
 
 * In a production setting I would aime for 100% code coverage using some mock for the boto3 client
 * I would also operate on CI workflow in order to add new code as easily as possible without breaking things (100% code coverage)
-* Because it would be an application that a team collaborates on, I would also make reading the code easier by using some tools like `black` for python to have a standard code base
-* For continues deployment I would make sure that the version of the image changes to track the enhancements of the application and to make rollbacks easier
+* Because it would be an application that a team collaborates on, I would also make reading the code easier by using some tools like `black` for python to have a unified code base
+* For continuous deployment I would make sure that the version of the image changes to track the enhancements of the application and to make rollbacks easier
 * For security purposes I would not use arguments like `aws-access-key-id` and `aws-secret-access-key`. For authentication, I would rely on IAM roles/users and configuration in `~/.aws` 
 * I would also monitor this application and put alerts in order to affect as less as possible downstream jobs in case of a failure
   
 
-*How would you test this application?*
+**How would you test this application?**
 
 * By covering as much code paths as possible in the unittests.
 * By executing some requests on a pre-production environment before executing the application in production
 
 
-*How you’d improve on this application design?*
+**How you’d improve on this application design?**
 
 This is intended to be a CLI application that handles small amount of data. If we wanted to scale, implementing the top 25 using python standard library would be very challenging. Instead, we can use 
 data processing frameworks like (Apache BEAM or Apache Spark) to handle such amount of data. Both frameworks support operations like filtering, grouping, aggregating and writing to several IOs.
